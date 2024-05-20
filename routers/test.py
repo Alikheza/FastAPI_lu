@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from shcemas.student import Student_Check
+from shcemas.student import Student_Info
 
 router = APIRouter()
 
 @router.post('/')
-def test (Student_check):
-    return Student_Check
+def test (Student_Info):
+    return Student_Info
