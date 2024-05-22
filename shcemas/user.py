@@ -1,11 +1,11 @@
 from typing import ClassVar
 from datetime import datetime 
 from pydantic import BaseModel , root_validator 
-import re
+from re import fullmatch 
 
-class user_check(BaseModel):
+class user_Info(BaseModel):
 
-    '''This is a class for data validation.
+    '''This is a class for users data validation.
       If you want your data to be checked correctly, 
       please send the data according to the names mentioned below'''
     
@@ -13,7 +13,6 @@ class user_check(BaseModel):
     user_Lname : str
     user_birthday : str
     user_ID : str
-    user_IDS : str 
     user_province : str
     user_borncity :str 
     user_address : str 
@@ -22,17 +21,16 @@ class user_check(BaseModel):
     user_home_number : str 
     user_department : str
     user_major : str 
-    user_married : str
-    detail : ClassVar[dict]
-    @root_validator(skip_on_failure=True)
-    def user_info_check(cls,values,detail):
+    detail : ClassVar ={}
+
+    def user_info_check(cls,values):
 
         def user_name_check(Fname,Lname,detail) :
             pattern = r"^[آ-ی]+$"
             if len(Fname)>10 : detail['user_Fname'] = 'نام نمیتواند بیشتر از ۱۰ کاراکتر باشد'
-            elif re.fullmatch(pattern,Fname)== None: detail['user_Fname'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
+            elif fullmatch(pattern,Fname)== None: detail['user_Fname'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             if len(Lname)>10 : detail['user_Lname'] = 'نام خانوادگی نمیتواند بیشتر از ۱۰ کاراکتر باشد'
-            elif re.fullmatch(pattern,Lname)== None: detail['user_Lname'] = 'نام خانوادگی فقط میتواند حاوی کارکتر های فارسی باشد'
+            elif fullmatch(pattern,Lname)== None: detail['user_Lname'] = 'نام خانوادگی فقط میتواند حاوی کارکتر های فارسی باشد'
             return detail
         
         
@@ -45,9 +43,7 @@ class user_check(BaseModel):
                 detail['user_birthday']='تاریخ تولد وارد شده نامعتبر است'
             return detail
         
-        def user_ID_check(ids ,Id, detail):
-            pattern = r'^\d{6}-\d{2}-[ا-ی]$'
-            if re.match(pattern,ids)== None : detail['user_IDS']='سریال شناسنامه نامعتبر است'
+        def user_ID_check(Id, detail):
             if len( Id )!=10 or Id.isdigit()==False : detail['user_ID'] ='کدملی نامعتر است'
             return detail
         
@@ -85,16 +81,12 @@ class user_check(BaseModel):
             if major not in major_list : detail['user_major']='رشته تحصیلی وارد شده نامعتبر است'
             return detail
 
-        def user_married_check(married,detail):
-            if married != 'متاهل' and married != 'مجرد' : detail['user_married']='وضیعت تاهل وارد شده نامعتبر است'
-            return detail
         
         #now calling the validation functions
-        user_name_check(values['user_Fname'],values['user_Lname'],detail)
-        user_birthday_check(values['user_birthday'],detail)
-        user_ID_check(values['user_IDS'],values['user_ID'],detail)
-        user_borncity_check(values['user_province'],values['user_borncity'],detail)
-        user_addres_check(values['user_address'],values['user_postal_code'],detail)
-        user_phonenumber_check(values['user_phone_number'],values['user_home_number'],detail)
-        user_department_check(values['user_department'],values['user_major'],detail)
-        user_married_check(values['user_married'],detail)
+        user_name_check(values['user_Fname'],values['user_Lname'],cls.detail)
+        user_birthday_check(values['user_birthday'],cls.detail)
+        user_ID_check(values['user_ID'],cls.detail)
+        user_borncity_check(values['user_province'],values['user_borncity'],cls.detail)
+        user_addres_check(values['user_address'],values['user_postal_code'],cls.detail)
+        user_phonenumber_check(values['user_phone_number'],values['user_home_number'],cls.detail)
+        user_department_check(values['user_department'],values['user_major'],cls.detail)

@@ -2,7 +2,7 @@ from shcemas import user
 from fastapi import HTTPException
 from pydantic import root_validator 
 
-class Professor_Info(user.user_check):
+class Professor_Info(user.user_Info):
 
     Lid : str 
     LcourseIDs : str
@@ -16,7 +16,7 @@ class Professor_Info(user.user_check):
         
         def professor_course_ID_check():
             pass
-        
+
         professor_id_check(values['Lid'],detail)
         professor_course_ID_check()
 

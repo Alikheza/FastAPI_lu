@@ -4,5 +4,5 @@ from shcemas.student import Student_Info
 router = APIRouter()
 
 @router.post('/')
-def test (Student_Info):
-    return Student_Info
+def test (Student:Student_Info):
+    return Student
