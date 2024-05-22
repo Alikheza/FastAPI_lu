@@ -10,9 +10,9 @@ class Course_Info(BaseModel):
     course_department : str
     course_credit : str
 
-    detail : ClassVar[dict]
+    detail : ClassVar = {}
     @root_validator(skip_on_failure=True)
-    def course_info_check (cls,values,detail):
+    def course_info_check (cls,values):
 
         def course_ID_check(Id,detail):
             if Id.isdigit()==False or len(Id)!=5 : detail['course_ID']= 'کد درس وارد شده معتبر نمیباشد ، کد درس یک عدد 5 رقمی میتواند باشد'
@@ -33,11 +33,11 @@ class Course_Info(BaseModel):
             if credit not in str(range(2,4)):detail['course_credit']='مقدار وارد شده معتبر نمیباشد، مقدار معتبر عددی بین ۱ تا ۴ است'
             return detail
         
-        course_ID_check(values['course_ID'],detail)
-        course_name_check(values['course_name'],detail)
-        course_department_check(values['course_department'],detail)
-        course_credit_check(values['course_credit'],detail)
+        course_ID_check(values['course_ID'],cls.detail)
+        course_name_check(values['course_name'],cls.detail)
+        course_department_check(values['course_department'],cls.detail)
+        course_credit_check(values['course_credit'],cls.detail)
 
-        if detail != {}:
-            raise HTTPException(detail=detail,status_code=400)
+        if cls.detail != {}:
+            raise HTTPException(detail=cls.detail,status_code=400)
         return values

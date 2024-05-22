@@ -21,7 +21,7 @@ class user_Info(BaseModel):
     user_home_number : str 
     user_department : str
     user_major : str 
-    detail : ClassVar ={}
+    detail : ClassVar = {}
 
     def user_info_check(cls,values):
 

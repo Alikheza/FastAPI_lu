@@ -9,6 +9,7 @@ class Student_Info(user_Info):
     user_student_IDS : str 
     user_student_married : str 
     user_student_courses_ID : str 
+    user_student_professors_IDs : str 
     
     @root_validator(skip_on_failure=True)
     def student_info_check(cls,values):
@@ -38,12 +39,15 @@ class Student_Info(user_Info):
         def student_student_courses_ID():
             pass
         
+        def student_professors_ids_check():
+            pass
         student_number_check(values['user_student_number'], cls.detail)
         student_father_name(values['user_student_father_name'],cls.detail)
         student_IDS_check(values['user_student_IDS'],cls.detail)
         student_married_check(values['user_student_married'],cls.detail)
 
         student_student_courses_ID()
+        student_professors_ids_check()
 
         if cls.detail != {} :
             raise HTTPException(detail=cls.detail,status_code=400)
