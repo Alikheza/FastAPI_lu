@@ -9,7 +9,7 @@ class Student_Info(user_Info):
     user_student_IDS : str 
     user_student_married : str 
     user_student_courses_ID : str 
-    user_student_professors_IDs : str 
+    # user_student_professors_IDs : str 
     
     @root_validator(skip_on_failure=True)
     def student_info_check(cls,values):
@@ -29,8 +29,9 @@ class Student_Info(user_Info):
             return detail
         
         def student_IDS_check(ids , detail):
-            pattern = r'^\d{6}-\d{2}-[ا-ی]$'
-            if match(pattern,ids)== None : detail['user_IDS']='سریال شناسنامه نامعتبر است'
+            # pattern = r'^\d{6}-\d{2}-[ا-ی]$'
+            # if match(pattern,ids)== None : detail['user_IDS']='سریال شناسنامه نامعتبر است'
+            pass
 
         def student_married_check(married,detail):
             if married != 'متاهل' and married != 'مجرد' : detail['student_married']='وضیعت تاهل وارد شده نامعتبر است'
@@ -50,5 +51,7 @@ class Student_Info(user_Info):
         student_professors_ids_check()
 
         if cls.detail != {} :
-            raise HTTPException(detail=cls.detail,status_code=400)
+            error = cls.detail
+            cls.detail = {}
+            raise HTTPException(detail=error,status_code=400)
         return values  

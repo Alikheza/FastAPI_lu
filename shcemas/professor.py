@@ -1,6 +1,7 @@
 from shcemas.user import user_Info
-from fastapi import HTTPException
+from fastapi import HTTPException 
 from pydantic import root_validator 
+from database.CRUD.course import read_course , session
 
 class Professor_Info(user_Info):
 
@@ -16,12 +17,17 @@ class Professor_Info(user_Info):
             if Id.isdigit()==False or len(Id)!=6 : detail['user_professor_id']= 'کد استاد وارد شده معتبر نمیباشد ، کد استاد یک عدد ۶ رقمی میتواند باشد'
             return detail
         
-        def professor_course_ID_check():
-            pass
-
+        def professor_course_ID_check(course_id,detail, db):
+            Ids=course_id.split('-')
+            for i in Ids :
+                if read_course(db=db,id=i)==None:
+                    detail[f'user_professor_course_ID : {i}']=(f'کد درس :{i} نامعتبر است')
+            return detail
         professor_id_check(values['user_professor_id'],cls.detail)
-        professor_course_ID_check()
+        professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,session) 
 
         if cls.detail != {} :
-            raise HTTPException(detail=cls.detail,status_code=400)
+            error = cls.detail
+            cls.detail = {}
+            raise HTTPException(detail=error,status_code=400)
         return values  

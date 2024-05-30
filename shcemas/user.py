@@ -62,7 +62,7 @@ class user_Info(BaseModel):
         
         def user_addres_check(U_address,postalcode,detail):
             if len(U_address) >= 100 : detail['user_address']='حداکثر طول ادرس ۱۰۰ کارکتر است'
-            if len(postalcode) <= 10 or postalcode.isdigit()==False : detail['user_postal_code']='کد پستی حداکثر میتواند ۱۰ رقم باشد'
+            if len(postalcode) > 10 or postalcode.isdigit()==False : detail['user_postal_code']='کد پستی حداکثر میتواند ۱۰ رقم باشد'
             return detail
         
         
