@@ -2,7 +2,8 @@ from typing import ClassVar
 from shcemas.user import user_Info
 from fastapi import HTTPException 
 from pydantic import root_validator 
-from database.CRUD.course import read_course , session
+from database.CRUD import course , professor
+
 
 class Professor_Info_In(user_Info):
 
@@ -15,18 +16,22 @@ class Professor_Info_In(user_Info):
         cls.C_Id= ''
         user_Info.user_info_check(cls,values)
         
-        def professor_id_check(Id,detail):
+        def professor_id_check(Id,detail,db):
+            print('here1')
             if Id.isdigit()==False or len(Id)!=6 : detail['user_professor_id']= 'کد استاد وارد شده معتبر نمیباشد ، کد استاد یک عدد ۶ رقمی میتواند باشد'
+            
+            elif professor.read_professor(db=db, p_id=Id)!= None : detail['user_professor_id']= 'کد استاد وارد شده نمیتواند تکراری باشد'
+            print('here')
             return detail
         
         def professor_course_ID_check(course_id,detail, db):
             Ids=course_id.split('-')
             for i in Ids :
-                if read_course(db=db,id=i)==None or i.isdigit()==False:
+                if course.read_course(db=db,id=i)==None or i.isdigit()==False:
                     detail[f'user_professor_course_ID : {i}']=(f'کد درس :{i} نامعتبر است')
             return detail
-        professor_id_check(values['user_professor_id'],cls.detail)
-        professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,session) 
+        professor_id_check(values['user_professor_id'],cls.detail,course.session)
+        professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,course.session) 
 
         if cls.detail != {} :
             error = cls.detail

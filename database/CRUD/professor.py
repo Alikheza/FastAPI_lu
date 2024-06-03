@@ -1,33 +1,25 @@
 from sqlalchemy.orm import Session 
 from database import module 
-from database.connect import engine
 from shcemas.professor import Professor_Info_In
 
-class Create_professor:
     
-    def professor_R(db, p_id , c_id):
-        db_PR=module.Relation_table(course_id = c_id , user_professor_id = p_id)
-        db.add(db_PR)
-        db.commit()
-        db.refresh(db_PR)
+def professor_R(db, p_id , c_id):
+    db_PR=module.Relation_table(course_id = c_id , user_professor_id = p_id)
+    db.add(db_PR)
+    db.commit()
+    db.refresh(db_PR)
+def professor(db,data):
+    db_pro=module.Professor(**data.dict())
+    db.add(db_pro)
+    db.commit()
+    db.refresh(db_pro)
+    id = Professor_Info_In.C_Id .split('-')
+    for i in  id:
+        professor_R(db=db , p_id=data.user_professor_id, c_id = i )
+    return 'ثبت اطلعات استاد موفقیت امیز بود'
 
-    def professor(db,data):
+def read_professor(db,p_id):
+    return db.query(module.Professor).filter(module.Professor.user_professor_id==p_id).first()
 
-        db_pro=module.Professor(**data.dict())
-        db.add(db_pro)
-        db.commit()
-        db.refresh(db_pro)
-        id = Professor_Info_In.C_Id .split('-')
-        for i in  id:
-            Create_professor.professor_R(db=db , p_id=data.user_professor_id, c_id = i )
-        return 'ثبت اطلعات استاد موفقیت امیز بود'
-    
-    def read_professor(db,p_id):
-        # print(type(p_id))
-
-        # print(p_id)
-        # print(db.query(module.Professor).filter(module.Professor.user_professor_id==p_id).first())
-        return db.query(module.Professor).filter(module.Professor.user_professor_id==p_id).first()
-    
-    def read_relationship_CR(db, id_p:int , id_c:int):
-        return db.query(module.Relation_table).filter(module.Relation_table.course_id==id_c , module.Relation_table.user_professor_id==id_p).first()
+def read_relationship_CR(db, id_p:int , id_c:int):
+    return db.query(module.Relation_table).filter(module.Relation_table.course_id==id_c , module.Relation_table.user_professor_id==id_p).first()

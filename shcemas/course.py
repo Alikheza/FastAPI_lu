@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from pydantic import BaseModel , root_validator 
 from typing import ClassVar
+from database.CRUD import course
 from re import fullmatch
 
 class Course_Info_In(BaseModel):
@@ -15,9 +16,9 @@ class Course_Info_In(BaseModel):
     def course_info_check (cls,values):
 
 
-        def course_ID_check(Id,detail):
-            if Id.isdigit()==False or len(Id)!=5 :
-                detail['course_ID']= 'کد درس وارد شده معتبر نمیباشد ، کد درس یک عدد 5 رقمی میتواند باشد'
+        def course_ID_check(Id,detail,db):
+            if Id.isdigit()==False or len(Id)!=5 : detail['course_ID']= 'کد درس وارد شده معتبر نمیباشد ، کد درس یک عدد 5 رقمی میتواند باشد'
+            elif course.read_course(db=db,id=Id)!=None : detail['course_ID']= 'کد درس وارد شده نمیتواند تکراری باشد'
             return detail
 
         def course_name_check(name, detail):
@@ -35,7 +36,7 @@ class Course_Info_In(BaseModel):
             if credit not in str(range(2,4)):detail['course_credit']='مقدار وارد شده معتبر نمیباشد، مقدار معتبر عددی بین ۱ تا ۴ است'
             return detail
         
-        course_ID_check(values['course_id'],cls.detail)
+        course_ID_check(values['course_id'],cls.detail,course.session)
         course_name_check(values['course_name'],cls.detail)
         course_department_check(values['course_department'],cls.detail)
         course_credit_check(values['course_credit'],cls.detail)
