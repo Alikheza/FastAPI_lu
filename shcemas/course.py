@@ -49,4 +49,4 @@ class Course_Info_In(BaseModel):
 class Course_Info_Out(BaseModel):
     course_name : str
     course_department : str
-    course_credit : str
+    course_credit : int
