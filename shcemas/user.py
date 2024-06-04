@@ -1,6 +1,7 @@
+from fastapi import HTTPException
 from typing import ClassVar
 from datetime import datetime 
-from pydantic import BaseModel , root_validator 
+from pydantic import BaseModel 
 from re import fullmatch 
 
 class user_Info(BaseModel):
@@ -80,13 +81,16 @@ class user_Info(BaseModel):
             if department not in department_list : detail['user_department']='دانشکده وارد شده معتبر نمی باشد'
             if major not in major_list : detail['user_major']='رشته تحصیلی وارد شده نامعتبر است'
             return detail
-
         
-        #now calling the validation functions
-        user_name_check(values['user_Fname'],values['user_Lname'],cls.detail)
-        user_birthday_check(values['user_birthday'],cls.detail)
-        user_ID_check(values['user_ID'],cls.detail)
-        user_borncity_check(values['user_province'],values['user_borncity'],cls.detail)
-        user_addres_check(values['user_address'],values['user_postal_code'],cls.detail)
-        user_phonenumber_check(values['user_phone_number'],values['user_home_number'],cls.detail)
-        user_department_check(values['user_department'],values['user_major'],cls.detail)
+        # now calling the validation functions
+        try:
+            user_name_check(values['user_Fname'],values['user_Lname'],cls.detail)
+            user_birthday_check(values['user_birthday'],cls.detail)
+            user_ID_check(values['user_ID'],cls.detail)
+            user_borncity_check(values['user_province'],values['user_borncity'],cls.detail)
+            user_addres_check(values['user_address'],values['user_postal_code'],cls.detail)
+            user_phonenumber_check(values['user_phone_number'],values['user_home_number'],cls.detail)
+            user_department_check(values['user_department'],values['user_major'],cls.detail)
+
+        except  KeyError as ke: 
+            raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)

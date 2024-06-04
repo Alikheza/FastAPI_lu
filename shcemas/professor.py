@@ -11,7 +11,7 @@ class Professor_Info_In(user_Info):
     user_professor_course_IDs : str
     C_Id : ClassVar =''
 
-    @root_validator(skip_on_failure=True)
+    @root_validator(pre=True)
     def professor_info_check(cls,values):
         cls.C_Id= ''
         user_Info.user_info_check(cls,values)
@@ -30,8 +30,12 @@ class Professor_Info_In(user_Info):
                 if course.read_course(db=db,id=i)==None or i.isdigit()==False:
                     detail[f'user_professor_course_ID : {i}']=(f'کد درس :{i} نامعتبر است')
             return detail
-        professor_id_check(values['user_professor_id'],cls.detail,course.session)
-        professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,course.session) 
+        try:
+            professor_id_check(values['user_professor_id'],cls.detail,course.session)
+            professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,course.session) 
+
+        except  KeyError as ke: 
+            raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
 
         if cls.detail != {} :
             error = cls.detail

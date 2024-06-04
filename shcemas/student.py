@@ -12,7 +12,7 @@ class Student_Info(user_Info):
     user_student_married : str 
     course_professor_IDL : str 
     p_c : ClassVar[dict]={}
-    @root_validator(skip_on_failure=True)
+    @root_validator(pre=True)
     def student_info_check(cls,values):
         user_Info.user_info_check(cls,values)
 
@@ -31,8 +31,11 @@ class Student_Info(user_Info):
             return detail
         
         def student_IDS_check(ids , detail):
-            pattern = r'^\d{6}-\d{2}-[ا-ی]$'
-            if match(pattern,ids)== None : detail['user_IDS']='سریال شناسنامه نامعتبر است'
+            # print(ids)
+            # if ids == None :
+            #     print('kiret de sag')
+            # pattern = r'^\d{6}-\d{2}-[ا-ی]$'
+            # if match(pattern,ids)== None : detail['user_IDS']='سریال شناسنامه نامعتبر است'
             pass
 
         def student_married_check(married,detail):
@@ -51,12 +54,17 @@ class Student_Info(user_Info):
                     if professor.read_relationship_CR(db=db , id_p=i, id_c=j)==None:
                         detail[f'course_professor_IDL{i}']=f'برای استاد با کد {i} کد درس {j}موجود نیست '
             return detail
-        student_number_check(values['user_student_number'], cls.detail, course.session)
-        student_father_name(values['user_student_father_name'],cls.detail)
-        student_IDS_check(values['user_student_IDS'],cls.detail)
-        student_married_check(values['user_student_married'],cls.detail)
-        check_course_professor(values['course_professor_IDL'],cls.detail,course.session)
-
+        
+        try:
+            student_number_check(values['user_student_number'], cls.detail, course.session)
+            student_father_name(values['user_student_father_name'],cls.detail)
+            student_IDS_check(values['user_student_IDS'],cls.detail)
+            student_married_check(values['user_student_married'],cls.detail)
+            check_course_professor(values['course_professor_IDL'],cls.detail,course.session)
+            
+        except  KeyError as ke: 
+            raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
+        
         if cls.detail != {} :
             error = cls.detail
             cls.detail = {}

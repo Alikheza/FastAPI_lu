@@ -12,7 +12,7 @@ class Course_Info_In(BaseModel):
     course_credit : str
     detail : ClassVar = {}
 
-    @root_validator(skip_on_failure=True)
+    @root_validator(pre=True)
     def course_info_check (cls,values):
 
 
@@ -35,12 +35,16 @@ class Course_Info_In(BaseModel):
         def course_credit_check(credit,detail):
             if credit not in str(range(2,4)):detail['course_credit']='مقدار وارد شده معتبر نمیباشد، مقدار معتبر عددی بین ۱ تا ۴ است'
             return detail
-        
-        course_ID_check(values['course_id'],cls.detail,course.session)
-        course_name_check(values['course_name'],cls.detail)
-        course_department_check(values['course_department'],cls.detail)
-        course_credit_check(values['course_credit'],cls.detail)
 
+        try:
+            course_ID_check(values['course_id'],cls.detail,course.session)
+            course_name_check(values['course_name'],cls.detail)
+            course_department_check(values['course_department'],cls.detail)
+            course_credit_check(values['course_credit'],cls.detail)
+
+        except  KeyError as ke: 
+            raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
+        
         if cls.detail != {} :
             error = cls.detail
             cls.detail = {}
