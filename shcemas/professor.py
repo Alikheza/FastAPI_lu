@@ -7,8 +7,9 @@ from database.CRUD import course , professor
 
 class Professor_Info_In(user_Info):
 
+
     user_professor_id : str 
-    user_professor_course_IDs : str
+    # user_professor_course_IDs : str
     C_Id : ClassVar =''
 
     @root_validator(pre=True)
@@ -43,7 +44,9 @@ class Professor_Info_In(user_Info):
             raise HTTPException(detail=error,status_code=400)
         
         cls.C_Id = values['user_professor_course_IDs']
-
+        
         values.pop('user_professor_course_IDs')
+
+        print('here')
 
         return  values

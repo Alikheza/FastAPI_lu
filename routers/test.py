@@ -2,9 +2,8 @@ from fastapi import APIRouter , Depends
 from shcemas import student as S 
 from shcemas import professor as P
 from sqlalchemy.orm import Session 
-from database import module
+
 from shcemas.course import Course_Info_In  , Course_Info_Out
-from database.connect import  engine
 from database.CRUD import course , student , professor
 
 
@@ -12,21 +11,21 @@ from dependency import get_db
 
 router = APIRouter()
 
-module.Base.metadata.create_all(bind=engine)
+# module.Base.metadata.create_all(bind=engine)
 
-@router.post('/')
-def test (Student:S.Student_Info):
-    return Student
+# @router.post('/')
+# def test (Student:S.Student_Info):
+#     return Student
 @router.post('/testp')
 def testt (profesor:P.Professor_Info_In):
     return profesor
 
 @router.post("/test2")
-def create_course_API( course:Course_Info_In, db:Session = Depends(get_db)):
-    return course.create_course(db=db, course=course)
+def create_course_API( dcourse:Course_Info_In, db:Session = Depends(get_db)):
+    return course.create_course(db=db, course=dcourse)
 
 @router.get("/test3/{c_id}", response_model=Course_Info_Out)
-def read_course_API(c_id:int,db:Session = Depends(get_db)):
+def read_course_API(c_id:str,db:Session = Depends(get_db)):
     return course.read_course(db=db,id=c_id)
 
 @router.post("/testpc")

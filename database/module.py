@@ -43,7 +43,7 @@ class Student(Base):
     user_major = Column(VARCHAR)
     user_student_number = Column(VARCHAR,primary_key=True)
     user_student_father_name = Column(VARCHAR)
-    user_student_IDS = Column(INTEGER)
+    user_student_IDS = Column(VARCHAR)
     user_student_married = Column(VARCHAR)
 
 

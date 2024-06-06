@@ -82,7 +82,8 @@ class user_Info(BaseModel):
             if major not in major_list : detail['user_major']='رشته تحصیلی وارد شده نامعتبر است'
             return detail
         
-        # now calling the validation functions
+        '''calling the checking-functions use try to see any of parameters are send or not'''
+        
         try:
             user_name_check(values['user_Fname'],values['user_Lname'],cls.detail)
             user_birthday_check(values['user_birthday'],cls.detail)
@@ -92,5 +93,5 @@ class user_Info(BaseModel):
             user_phonenumber_check(values['user_phone_number'],values['user_home_number'],cls.detail)
             user_department_check(values['user_department'],values['user_major'],cls.detail)
 
-        except  KeyError as ke: 
+        except KeyError as ke: 
             raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)

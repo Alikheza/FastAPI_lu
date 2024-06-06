@@ -9,7 +9,7 @@ class Course_Info_In(BaseModel):
     course_id : str
     course_name : str
     course_department : str
-    course_credit : str
+    course_credit : int
     detail : ClassVar = {}
 
     @root_validator(pre=True)
@@ -18,7 +18,6 @@ class Course_Info_In(BaseModel):
 
         def course_ID_check(Id,detail,db):
             if Id.isdigit()==False or len(Id)!=5 : detail['course_ID']= 'کد درس وارد شده معتبر نمیباشد ، کد درس یک عدد 5 رقمی میتواند باشد'
-            elif course.read_course(db=db,id=Id)!=None : detail['course_ID']= 'کد درس وارد شده نمیتواند تکراری باشد'
             return detail
 
         def course_name_check(name, detail):
@@ -33,7 +32,7 @@ class Course_Info_In(BaseModel):
             return detail
         
         def course_credit_check(credit,detail):
-            if credit not in str(range(2,4)):detail['course_credit']='مقدار وارد شده معتبر نمیباشد، مقدار معتبر عددی بین ۱ تا ۴ است'
+            if credit not in range(4):detail['course_credit']='مقدار وارد شده معتبر نمیباشد، مقدار معتبر عددی بین ۱ تا ۴ است'
             return detail
 
         try:

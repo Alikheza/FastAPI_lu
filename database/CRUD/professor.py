@@ -10,6 +10,7 @@ def professor_R(db, p_id , c_id):
     db.refresh(db_PR)
 def professor(db,data):
     db_pro=module.Professor(**data.dict())
+    print('hshhshsh')
     db.add(db_pro)
     db.commit()
     db.refresh(db_pro)
