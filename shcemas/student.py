@@ -15,13 +15,14 @@ class Student_Info(user_Info):
     user_student_father_name : str
     user_student_IDS : str 
     user_student_married : str 
+    #course_professor_IDL : str
     p_c : ClassVar[dict]={}
 
     @root_validator(pre=True)
     def student_info_check(cls,values):
         user_Info.user_info_check(cls,values)
 
-        def student_number_check(studentnumber,detail,db):
+        def student_number_check(studentnumber,detail):
             if len(studentnumber) != 11 or studentnumber.isdigit() == False : detail['user_student_number']='شماره دانشجوی  باید ۱۱ رقم باشد. تعداد ارقام وارد شده درست نمیباشد. '
             elif int(studentnumber[0:3]) not in range (400,403): detail['user_student_number']='قسمت سال نادرست است '
             elif studentnumber[3:9] != '114150' : detail['user_student_number']='قسمت ثابت نادرست است'
@@ -57,8 +58,9 @@ class Student_Info(user_Info):
             return detail
 
         '''calling the checking-functions use try to see any of parameters are send or not'''
+
         try:
-            student_number_check(values['user_student_number'], cls.detail, course.session)
+            student_number_check(values['user_student_number'], cls.detail)
             student_father_name(values['user_student_father_name'],cls.detail)
             student_IDS_check(values['user_student_IDS'],cls.detail)
             student_married_check(values['user_student_married'],cls.detail)

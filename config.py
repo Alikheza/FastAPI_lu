@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import test , student , course
+from routers import  student , course , professor
 from database.connect import create_all_table
 
 app=FastAPI()
@@ -10,3 +10,4 @@ def startup_event():
 
 app.include_router(course.router)
 app.include_router(student.router)
+app.include_router(professor.router)
