@@ -1,9 +1,5 @@
 from sqlalchemy import delete , update
-from sqlalchemy.orm import Session 
 from database import models 
-from database.connect import engine
-
-session=Session(bind=engine)
 
 def create_course(db,data):
     db_course= models.course(**data.dict())

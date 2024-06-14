@@ -85,3 +85,6 @@ def select_professor(db , id):
     professor_data['user_professor_course_IDs']=formatstr 
  
     return professor_data
+
+def select_user_ID(db,id):
+    return db.query(models.Professor).filter(models.Professor.user_ID==id).first()

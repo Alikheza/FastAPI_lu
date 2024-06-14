@@ -90,4 +90,8 @@ def select_student (db , id ):
 
     return student_data 
 
+def select_user_ID(db,id):
+    return db.query(models.Student).filter(models.Student.user_ID==id).first()
 
+def select_user_IDs(db,ids):
+    return db.query(models.Student).filter(models.Student.user_student_IDS==ids).first()

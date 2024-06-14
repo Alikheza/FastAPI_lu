@@ -2,7 +2,8 @@ from typing import ClassVar
 from shcemas.user import user_Info
 from fastapi import HTTPException 
 from pydantic import root_validator , BaseModel
-from database.CRUD import course 
+from database.CRUD import course , professor
+from database.connect import session
 
 
 class Professor_Info_In(user_Info):
@@ -27,9 +28,14 @@ class Professor_Info_In(user_Info):
                 if course.read_course(db=db,id=i)==None or i.isdigit()==False:
                     detail[f'user_professor_course_ID : {i}']=(f'کد درس :{i} نامعتبر است')
             return detail
+        
+        def professor_ID_check(id , detail ,db):
+            if professor.select_user_ID(db=db , id=id )!= None : detail['user_ID']='کد ملی تکراری است'
+
         try:
+            professor_ID_check(values['user_ID'],cls.detail,session)
             professor_id_check(values['user_professor_id'],cls.detail)
-            professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,course.session) 
+            professor_course_ID_check(values['user_professor_course_IDs'], cls.detail ,session) 
 
         except  KeyError as ke: 
             raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)

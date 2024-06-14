@@ -1,5 +1,5 @@
 from .connect import Base
-from sqlalchemy import  Column,INTEGER,VARCHAR,ForeignKey , SMALLINT
+from sqlalchemy import Column,ForeignKey,INTEGER,VARCHAR,SMALLINT
 
 ''''''
 class course (Base):
@@ -18,7 +18,7 @@ class Professor(Base):
     user_Fname = Column(VARCHAR)
     user_Lname = Column(VARCHAR)
     user_birthday = Column(VARCHAR)
-    user_ID = Column(VARCHAR)
+    user_ID = Column(VARCHAR,unique=True)
     user_province = Column(VARCHAR)
     user_borncity = Column(VARCHAR)
     user_address = Column(VARCHAR)
@@ -36,7 +36,7 @@ class Student(Base):
     user_Fname = Column(VARCHAR,nullable=False)
     user_Lname = Column(VARCHAR)
     user_birthday = Column(VARCHAR)
-    user_ID = Column(VARCHAR)
+    user_ID = Column(VARCHAR ,unique=True)
     user_province = Column(VARCHAR)
     user_borncity = Column(VARCHAR)
     user_address = Column(VARCHAR)
@@ -47,7 +47,7 @@ class Student(Base):
     user_major = Column(VARCHAR)
     user_student_number = Column(VARCHAR,primary_key=True)
     user_student_father_name = Column(VARCHAR)
-    user_student_IDS = Column(VARCHAR)
+    user_student_IDS = Column(VARCHAR,unique=True)
     user_student_married = Column(VARCHAR)
 
 class Relation_table(Base):
