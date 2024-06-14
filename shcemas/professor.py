@@ -8,6 +8,14 @@ from database.connect import session
 
 class Professor_Info_In(user_Info):
 
+    '''
+    After the user class validates general parameters provided by the user and records any issues in the detail dictionary, 
+    the professor class now validates parameters specific to professor. 
+    Finally, after updating the detail dictionary with any additional issues, the validation errors are displayed to the user.
+    
+
+    To ensure the parameters are correctly validated, they must be sent according to the names listed below.
+    '''
 
     user_professor_id : str 
     # user_professor_course_IDs : str

@@ -6,9 +6,17 @@ from re import fullmatch
 
 class user_Info(BaseModel):
 
-    '''This is a class for users data validation.
-      If you want your data to be checked correctly, 
-      please send the data according to the names mentioned below'''
+    '''
+    This class validates common parameters. 
+    Each field's issues are recorded in the detail dictionary after validation. 
+    The detail dictionary is then passed to subclasses for further validation of specific parameters,
+    and any additional issues are reported to the user.
+
+    
+    Parameters that start with 'user' and do not mention 'professor' or 'student' afterwards are considered common parameters.
+
+    To ensure the parameters are correctly validated, they must be sent according to the names listed below.
+    '''
     
     user_Fname : str 
     user_Lname : str
@@ -32,7 +40,6 @@ class user_Info(BaseModel):
             elif fullmatch(pattern,Fname)== None: detail['user_Fname'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             if len(Lname)>10 : detail['user_Lname'] = 'نام خانوادگی نمیتواند بیشتر از ۱۰ کاراکتر باشد'
             elif fullmatch(pattern,Lname)== None: detail['user_Lname'] = 'نام خانوادگی فقط میتواند حاوی کارکتر های فارسی باشد'
-            return detail
         
         
         def user_birthday_check(birthday,detail):
@@ -42,13 +49,11 @@ class user_Info(BaseModel):
                     detail['user_birthday']='تاریخ تولد وارد شده نامعتبر است'
             except:
                 detail['user_birthday']='تاریخ تولد وارد شده نامعتبر است'
-            return detail
         
         def user_ID_check(Id, detail):
             if len( Id )!=10 or Id.isdigit()==False : detail['user_ID'] ='کدملی نامعتر است'
-            return detail
         
-        
+
         def user_borncity_check(userprovince,usercity,detail):
             iran_provinces = {"آذربایجان شرقی": "تبریز","آذربایجان غربی": "ارومیه","اردبیل": "اردبیل","اصفهان": "اصفهان","البرز": "کرج",
                               "ایلام": "ایلام","بوشهر": "بوشهر","تهران": "تهران","چهارمحال و بختیاری": "شهرکرد","خراسان جنوبی": "بیرجند",
@@ -59,12 +64,10 @@ class user_Info(BaseModel):
                 detail['user_province']=' استان نامعتبر است' 
             elif iran_provinces[userprovince] != usercity :
                 detail['user_borncity']='ترکیب استان و شهر نامعتبر است'
-            return detail 
         
         def user_addres_check(U_address,postalcode,detail):
             if len(U_address) >= 100 : detail['user_address']='حداکثر طول ادرس ۱۰۰ کارکتر است'
             if len(postalcode) > 10 or postalcode.isdigit()==False : detail['user_postal_code']='کد پستی حداکثر میتواند ۱۰ رقم باشد'
-            return detail
         
         
         def user_phonenumber_check(phonN,homeN,detail):
@@ -72,7 +75,6 @@ class user_Info(BaseModel):
                 detail['user_phone_number']='شماره همراه وارد شده نامعتبر است '
             if homeN.isdigit()==False or homeN.startswith('0')== False or len(homeN)!=11 :
                 detail['user_home_number']='تلفن ثابت وارد شده نامعتبر است '
-            return detail
         
         def user_department_check(department,major,detail):
             department_list =['فنی و مهندسی','علوم پایه','علوم انسانی','دامپزشکی','اقتصاد','کشاورزی','منابع طبیعی']
@@ -80,7 +82,6 @@ class user_Info(BaseModel):
                         "مهندسی پزشکی","مهندسی هوافضا","مهندسی شیمی","مهندسی مخازن","مهندسی بیومدیکال","مهندسی نفت",]
             if department not in department_list : detail['user_department']='دانشکده وارد شده معتبر نمی باشد'
             if major not in major_list : detail['user_major']='رشته تحصیلی وارد شده نامعتبر است'
-            return detail
         
         '''calling the checking-functions use try to see any of parameters are send or not'''
         

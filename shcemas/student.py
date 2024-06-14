@@ -8,9 +8,14 @@ from database.connect import session
 
 class Student_Info(user_Info):
      
-    '''This is a class for student data validation.
-      If you want your data to be checked correctly, 
-      please send the data according to the names mentioned below'''
+    '''  
+    After the user class validates general parameters provided by the user and records any issues in the detail dictionary, 
+    the student class now validates parameters specific to student. 
+    Finally, after updating the detail dictionary with any additional issues, the validation errors are displayed to the user.
+
+    
+    To ensure the parameters are correctly validated, they must be sent according to the names listed below.
+    '''
     
     user_student_number : str
     user_student_father_name : str
