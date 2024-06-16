@@ -8,6 +8,6 @@ app=FastAPI()
 def startup_event():
     create_all_table()
 
-app.include_router(course.router)
-app.include_router(student.router)
-app.include_router(professor.router)
+app.include_router(course.router, tags=["course"])
+app.include_router(professor.router, tags=["professor"])
+app.include_router(student.router, tags=["student"])

@@ -8,8 +8,8 @@ class user_Info(BaseModel):
 
     '''
     This class validates common parameters. 
-    Each field's issues are recorded in the detail dictionary after validation. 
-    The detail dictionary is then passed to subclasses for further validation of specific parameters,
+    Each field's issues are recorded in the 'detail' dictionary after validation. 
+    The 'detail' dictionary is then passed to subclasses for further validation of specific parameters,
     and any additional issues are reported to the user.
 
     
@@ -35,7 +35,7 @@ class user_Info(BaseModel):
     def user_info_check(cls,values):
 
         def user_name_check(Fname,Lname,detail) :
-            pattern = r"^[آ-ی]+$"
+            pattern = r"^[ا-ی\s]+$"
             if len(Fname)>10 : detail['user_Fname'] = 'نام نمیتواند بیشتر از ۱۰ کاراکتر باشد'
             elif fullmatch(pattern,Fname)== None: detail['user_Fname'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             if len(Lname)>10 : detail['user_Lname'] = 'نام خانوادگی نمیتواند بیشتر از ۱۰ کاراکتر باشد'

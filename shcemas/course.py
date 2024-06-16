@@ -20,7 +20,7 @@ class Course_Info_In(BaseModel):
             return detail
 
         def course_name_check(name, detail):
-            pattern = r"^[ا-ی]+$"
+            pattern = r"^[ا-ی\s]+$"
             if len(name)>25 : detail['course_name'] = 'نام نمیتواند بیشتر از 25 کاراکتر باشد'
             elif fullmatch(pattern,name)== None: detail['course_name'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             return detail
