@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker , Session
 
 
-engine = create_engine ("postgresql://username: dont use my pass plz :) @localhost/student_system") 
+engine = create_engine ("postgresql://alireza:20524219@localhost:8080/studentapp") 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
