@@ -1,0 +1,37 @@
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      - POSTGRES_DB=studentapp
+      - POSTGRES_USER=alireza
+      - POSTGRES_PASSWORD=20524219
+    # networks:
+    #   - NETAPP
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/src/
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres
+    # networks:
+    #   - NETAPP
+    # restart: always
+# networks:
+#   NETAPP:
+volumes:
+  postgres_data:
+  

@@ -1,13 +1,16 @@
-from fastapi import FastAPI
-from routers import  student , course , professor
-from database.connect import create_all_table
+from pydantic_settings import BaseSettings
 
-app=FastAPI()
 
-@app.on_event("startup")
-def startup_event():
-    create_all_table()
+class ENV(BaseSettings):
 
-app.include_router(course.router, tags=["course"])
-app.include_router(professor.router, tags=["professor"])
-app.include_router(student.router, tags=["student"])
+    DATABASE_HOST : str = "localhost"
+    DATABASE_USERNAME : str = "postgres"
+    DATABASE_PASSWORD : str = "postgres"
+    DATABASE_PORT : str = "5432"
+    DATABASE_NAME : str = "postgres"
+
+    class Config:
+        env_file = ".env"
+
+
+Evariable=ENV()
