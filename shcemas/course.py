@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from pydantic import BaseModel , root_validator 
+from pydantic import BaseModel , model_validator
 from typing import ClassVar
 from re import fullmatch
 
@@ -11,7 +11,7 @@ class Course_Info_In(BaseModel):
     course_credit : int
     detail : ClassVar = {}
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
     def course_info_check (cls,values):
 
 
@@ -20,7 +20,7 @@ class Course_Info_In(BaseModel):
             return detail
 
         def course_name_check(name, detail):
-            pattern = r"^[ا-ی\s]+$"
+            pattern = r"^[ا-ی ]+$"
             if len(name)>25 : detail['course_name'] = 'نام نمیتواند بیشتر از 25 کاراکتر باشد'
             elif fullmatch(pattern,name)== None: detail['course_name'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             return detail
@@ -43,7 +43,7 @@ class Course_Info_In(BaseModel):
         except  KeyError as ke: 
             raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
         
-        if cls.detail != {} :
+        if cls.detail :
             error = cls.detail
             cls.detail = {}
             raise HTTPException(detail=error,status_code=400)

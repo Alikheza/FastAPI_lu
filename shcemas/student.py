@@ -1,7 +1,7 @@
 from typing import ClassVar
 from shcemas.user import user_Info
 from fastapi import HTTPException
-from pydantic import root_validator , BaseModel
+from pydantic import BaseModel , model_validator
 from re import match , fullmatch
 from database.CRUD import professor , student
 from database.connect import session
@@ -24,7 +24,7 @@ class Student_Info(user_Info):
     #course_professor_IDL : str
     p_c : ClassVar[dict]={}
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
     def student_info_check(cls,values):
         user_Info.user_info_check(cls,values)
 
@@ -35,7 +35,7 @@ class Student_Info(user_Info):
             elif int(studentnumber[9:]) not in range(1,100): detail['user_student_number']='قسمت اندیس نادرست است'
         
         def student_father_name (Fname,detail):
-            pattern = r"^[آ-ی]+$"
+            pattern = r"^[آ-ی ]+$"
             if len(Fname)>10 : detail['user_father_name'] = 'نام پدر نمیتواند بیشتر از ۱۰ کاراکتر باشد'
             elif fullmatch(pattern,Fname)== None: detail['user_father_name'] = 'نام پدر فقط میتواند حاوی کارکتر های فارسی باشد'
         
@@ -48,17 +48,19 @@ class Student_Info(user_Info):
             if married != 'متاهل' and married != 'مجرد' : detail['student_married']='وضیعت تاهل وارد شده نامعتبر است'
 
         def check_course_professor(p_c,detail,db):
-            p_c=eval(p_c)
-            list_professor = p_c.keys()
-            for i in list_professor :
-                if i.isdigit()==False or professor.read_professor(db=db , p_id=i)==None:
-                    detail[f'course_professor_IDL{i}']=f'کد استاد {i} وارد شده نامعتبر است'
-                    continue
-                for j in p_c[i] :
-                    if type(j)!=str : j = str(j)
-                    if professor.read_relationship_CR(db=db , id_p=i, id_c=j)==None:
-                        detail[f'course_professor_IDL{i}']=f'برای استاد با کد {i} کد درس {j}موجود نیست '
-
+            try :
+                p_c=eval(p_c)
+                list_professor = p_c.keys()
+                for i in list_professor :
+                    if i.isdigit()==False or professor.read_professor(db=db , p_id=i)==None:
+                        detail[f'course_professor_IDL{i}']=f'کد استاد {i} وارد شده نامعتبر است'
+                        continue
+                    for j in p_c[i] :
+                        if type(j)!=str : j = str(j)
+                        if professor.read_relationship_CR(db=db , id_p=i, id_c=j)==None : detail[f'course_professor_IDL{i}']=f'برای استاد با کد {i} کد درس {j}موجود نیست '
+            except : 
+                detail['course_professor_IDL']='مشکلی در صحت سنجی لیست استاد و درس به وجود امده است. لطفا مطمعن شوید که مطابق الگوی داده شده مقادیر را وارد کنید'
+    
         def student_ID_check(id,detail,db):
             if student.select_user_ID(db=db , id=id )!= None : detail['user_ID']='کد ملی تکراری است'
 
@@ -75,13 +77,12 @@ class Student_Info(user_Info):
         except  KeyError as ke: 
             raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
         
-        if cls.detail != {} :
+        if cls.detail :
             error = cls.detail
-            cls.detail = {}
+            cls.detail={}
             raise HTTPException(detail=error,status_code=400)
         
         cls.p_c= values['course_professor_IDL']
-
         values.pop('course_professor_IDL')
         
         return values  

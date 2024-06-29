@@ -52,9 +52,8 @@ class Student(Base):
 
 class Relation_table(Base):
 
-    __tablename__ = 'course_professor_student'
-
-    serial = Column(INTEGER,primary_key =True)
+    __tablename__ = 'Relation'
+    
     user_student_number = Column(VARCHAR,ForeignKey('student.user_student_number', onupdate="CASCADE"))
-    course_id = Column(VARCHAR,ForeignKey('course.course_id' , onupdate="CASCADE" , ondelete="CASCADE"))
+    course_id = Column(VARCHAR,ForeignKey('course.course_id' , onupdate="CASCADE" , ondelete="CASCADE"),primary_key =True)
     user_professor_id = Column(VARCHAR,ForeignKey('professor.user_professor_id' , onupdate="CASCADE",ondelete="CASCADE"))

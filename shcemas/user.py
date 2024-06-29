@@ -35,7 +35,7 @@ class user_Info(BaseModel):
     def user_info_check(cls,values):
 
         def user_name_check(Fname,Lname,detail) :
-            pattern = r"^[ا-ی\s]+$"
+            pattern = r"^[ا-ی ]+$"
             if len(Fname)>10 : detail['user_Fname'] = 'نام نمیتواند بیشتر از ۱۰ کاراکتر باشد'
             elif fullmatch(pattern,Fname)== None: detail['user_Fname'] = 'نام فقط میتواند حاوی کارکتر های فارسی باشد'
             if len(Lname)>10 : detail['user_Lname'] = 'نام خانوادگی نمیتواند بیشتر از ۱۰ کاراکتر باشد'
@@ -50,6 +50,7 @@ class user_Info(BaseModel):
             except:
                 detail['user_birthday']='تاریخ تولد وارد شده نامعتبر است'
         
+
         def user_ID_check(Id, detail):
             if len( Id )!=10 or Id.isdigit()==False : detail['user_ID'] ='کدملی نامعتر است'
         
@@ -60,21 +61,17 @@ class user_Info(BaseModel):
                               "خراسان رضوی": "مشهد","خراسان شمالی": "بجنورد","خوزستان": "اهواز","زنجان": "زنجان","سمنان": "سمنان","سیستان و بلوچستان": "زاهدان",
                               "فارس": "شیراز","قزوین": "قزوین","قم": "قم","کردستان": "سنندج","کرمان": "کرمان","کرمانشاه": "کرمانشاه","کهگیلویه و بویراحمد": "یاسوج",
                               "گلستان": "گرگان","گیلان": "رشت","لرستان": "خرم‌آباد","مازندران": "ساری","مرکزی": "اراک","هرمزگان": "بندرعباس","همدان": "همدان","یزد": "یزد"}
-            if iran_provinces.get(userprovince)==None:
-                detail['user_province']=' استان نامعتبر است' 
-            elif iran_provinces[userprovince] != usercity :
-                detail['user_borncity']='ترکیب استان و شهر نامعتبر است'
+            if iran_provinces.get(userprovince)==None : detail['user_province']=' استان نامعتبر است' 
+            elif iran_provinces[userprovince] != usercity : detail['user_borncity']='ترکیب استان و شهر نامعتبر است'
         
         def user_addres_check(U_address,postalcode,detail):
             if len(U_address) >= 100 : detail['user_address']='حداکثر طول ادرس ۱۰۰ کارکتر است'
             if len(postalcode) > 10 or postalcode.isdigit()==False : detail['user_postal_code']='کد پستی حداکثر میتواند ۱۰ رقم باشد'
         
-        
+
         def user_phonenumber_check(phonN,homeN,detail):
-            if phonN.isdigit() == False or phonN.startswith('09')== False or len(phonN)!=11 :
-                detail['user_phone_number']='شماره همراه وارد شده نامعتبر است '
-            if homeN.isdigit()==False or homeN.startswith('0')== False or len(homeN)!=11 :
-                detail['user_home_number']='تلفن ثابت وارد شده نامعتبر است '
+            if phonN.isdigit() == False or phonN.startswith('09')== False or len(phonN)!=11 : detail['user_phone_number']='شماره همراه وارد شده نامعتبر است '
+            if homeN.isdigit()==False or homeN.startswith('0')== False or len(homeN)!=11 : detail['user_home_number']='تلفن ثابت وارد شده نامعتبر است '
         
         def user_department_check(department,major,detail):
             department_list =['فنی و مهندسی','علوم پایه','علوم انسانی','دامپزشکی','اقتصاد','کشاورزی','منابع طبیعی']

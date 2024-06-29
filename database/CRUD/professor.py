@@ -23,8 +23,6 @@ def read_relationship_CR(db, id_p , id_c):
     return db.query(models.Relation_table).filter(models.Relation_table.course_id==id_c , models.Relation_table.user_professor_id==id_p).first()
 
 
-
-
 def delete_professor(db,id):
     query =  delete(models.Professor).where(models.Professor.user_professor_id==id)
     db.execute(query)
@@ -35,9 +33,6 @@ def update_professor(db, data , id ):
     query = update(models.Professor).where(models.Professor.user_professor_id==id).values(user_professor_id=data.user_professor_id)
     db.execute(query)
     db.commit()
-
-
-
 
 
 def select_professor(db , id):
