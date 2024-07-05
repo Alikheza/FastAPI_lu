@@ -14,8 +14,6 @@ def create_course_API(course_validate:COR.Course_Info_In, db : Session=Depends(g
     C_crud.create_course(data=course_validate , db=db)
     return 'ثبت اطلاعات درس موفقیت امیز بود'
 
-
-
 @router.get("/v1/Read_course/{course_id}", response_model=COR.Course_Info_Out , status_code=200)
 def read_course_API(course_id:str , db:Session = Depends(get_db)):
     result = C_crud.read_course(db=db,id=course_id)

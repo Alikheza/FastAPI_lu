@@ -1,16 +1,16 @@
-from pydantic_settings import BaseSettings
+# from pydantic_settings import BaseSettings
 
 
-class ENV(BaseSettings):
+# class ENV(BaseSettings):
 
-    DATABASE_HOST : str 
-    DATABASE_USERNAME : str 
-    DATABASE_PASSWORD : str 
-    DATABASE_PORT : str 
-    DATABASE_NAME : str 
+#     DATABASE_HOST : str 
+#     DATABASE_USERNAME : str 
+#     DATABASE_PASSWORD : str 
+#     DATABASE_PORT : str 
+#     DATABASE_NAME : str 
 
-    class Config:
-        env_file = ".env"
+#     class Config:
+#         env_file = ".env"
 
 
-Evariable=ENV()
+# Evariable=ENV()

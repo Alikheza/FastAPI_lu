@@ -21,8 +21,7 @@ class Student_Info(user_Info):
     user_student_father_name : str
     user_student_IDS : str 
     user_student_married : str 
-    #course_professor_IDL : str
-    p_c : ClassVar[dict]={}
+    course_professor_IDL : str
 
     @model_validator(mode='before')
     def student_info_check(cls,values):
@@ -39,10 +38,9 @@ class Student_Info(user_Info):
             if len(Fname)>10 : detail['user_father_name'] = 'نام پدر نمیتواند بیشتر از ۱۰ کاراکتر باشد'
             elif fullmatch(pattern,Fname)== None: detail['user_father_name'] = 'نام پدر فقط میتواند حاوی کارکتر های فارسی باشد'
         
-        def student_IDS_check(ids , detail , db):
+        def student_IDS_check(ids , detail ):
             pattern = r'^\d{6}-\d{2}-[ا-ی]$'
-            if student.select_user_IDs(db=db , ids=ids)!=None: detail['user_student_IDS']='سریال شناسنامه تکراری است'
-            elif match(pattern,ids)== None : detail['user_student_IDS']='سریال شناسنامه نامعتبر است'
+            if match(pattern,ids)== None : detail['user_student_IDS']='سریال شناسنامه نامعتبر است'
 
         def student_married_check(married,detail):
             if married != 'متاهل' and married != 'مجرد' : detail['student_married']='وضیعت تاهل وارد شده نامعتبر است'
@@ -58,19 +56,17 @@ class Student_Info(user_Info):
                     for j in p_c[i] :
                         if type(j)!=str : j = str(j)
                         if professor.read_relationship_CR(db=db , id_p=i, id_c=j)==None : detail[f'course_professor_IDL{i}']=f'برای استاد با کد {i} کد درس {j}موجود نیست '
-            except : 
-                detail['course_professor_IDL']='مشکلی در صحت سنجی لیست استاد و درس به وجود امده است. لطفا مطمعن شوید که مطابق الگوی داده شده مقادیر را وارد کنید'
+            except Exception as e: 
+                detail['course_professor_IDL']=f'{e!r}مشکلی در صحت سنجی لیست استاد و درس به وجود امده است. لطفا مطمعن شوید که مطابق الگوی داده شده مقادیر را وارد کنید'
     
-        def student_ID_check(id,detail,db):
-            if student.select_user_ID(db=db , id=id )!= None : detail['user_ID']='کد ملی تکراری است'
 
         '''calling the checking-functions use try to see any of parameters are send or not'''
 
         try:
-            student_ID_check(values['user_ID'],cls.detail,session)
+            # student_ID_check(values['user_ID'],cls.detail,session)
             student_number_check(values['user_student_number'], cls.detail)
             student_father_name(values['user_student_father_name'],cls.detail)
-            student_IDS_check(values['user_student_IDS'],cls.detail , session)
+            student_IDS_check(values['user_student_IDS'],cls.detail )
             student_married_check(values['user_student_married'],cls.detail)
             check_course_professor(values['course_professor_IDL'],cls.detail,session)
 
@@ -82,8 +78,8 @@ class Student_Info(user_Info):
             cls.detail={}
             raise HTTPException(detail=error,status_code=400)
         
-        cls.p_c= values['course_professor_IDL']
-        values.pop('course_professor_IDL')
+        # cls.p_c= values['course_professor_IDL']
+        # values.pop('course_professor_IDL')
         
         return values  
     
