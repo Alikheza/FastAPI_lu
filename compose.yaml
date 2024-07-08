@@ -18,7 +18,7 @@ services:
       - ./.env
     ports:
       - "8000:8000"
-    command: bash -c 'while !</dev/tcp/postgres/5432; do sleep 5; done; uvicorn main:app --host 0.0.0.0 --port 8000'
+    command: bash -c 'while !</dev/tcp/postgres/5432; do sleep 5; done; uvicorn app.main:app --host 0.0.0.0 --port 8000'
     networks:
       - app-network
       

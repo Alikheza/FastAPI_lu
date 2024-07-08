@@ -49,7 +49,7 @@ uvicorn app.main:app --host "yourhost" --port 8000
 To dockerize the project, simply use the following command:
 
 ```bash
-docker compose up
+docker compose up - d
 ```
 
 This will automatically build an image and run the project.

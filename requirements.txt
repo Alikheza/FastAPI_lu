@@ -4,3 +4,4 @@ SQLAlchemy==1.4.52
 uvicorn==0.30.1
 psycopg2==2.9.9
 pydantic_settings==2.3.4
+PyJWT==2.8.0
