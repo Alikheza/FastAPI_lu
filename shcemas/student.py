@@ -1,9 +1,8 @@
-from typing import ClassVar
 from shcemas.user import user_Info
 from fastapi import HTTPException
 from pydantic import BaseModel , model_validator
 from re import match , fullmatch
-from database.CRUD import professor , student
+from database.CRUD import professor 
 from database.connect import session
 
 class Student_Info(user_Info):

@@ -93,3 +93,6 @@ class user_Info(BaseModel):
 
         except KeyError as ke: 
             raise HTTPException(detail=f'  وارد نشده است {ke!r}',status_code=400)
+        
+
+

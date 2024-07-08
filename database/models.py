@@ -7,8 +7,7 @@ association_table = Table(
     Base.metadata,
     Column('course_id', VARCHAR, ForeignKey('course.course_id', ondelete='CASCADE', onupdate='CASCADE')),
     Column('user_professor_id', VARCHAR, ForeignKey('professor.user_professor_id', ondelete='CASCADE', onupdate='CASCADE')),
-    Column('user_student_number', VARCHAR, ForeignKey('student.user_student_number', ondelete='CASCADE', onupdate='CASCADE')),
-    Column('serial',INTEGER, primary_key=True)
+    Column('user_student_number', VARCHAR, ForeignKey('student.user_student_number', ondelete='CASCADE', onupdate='CASCADE'))
 
 )
 
@@ -44,7 +43,7 @@ class Professor(Base):
 class Student(Base):
     __tablename__ = 'student'
 
-    user_Fname = Column(VARCHAR, nullable=False)
+    user_Fname = Column(VARCHAR)
     user_Lname = Column(VARCHAR)
     user_birthday = Column(VARCHAR)
     user_ID = Column(VARCHAR, unique=True)
@@ -62,3 +61,10 @@ class Student(Base):
     user_student_married = Column(VARCHAR)
 
     courses = relationship("course", secondary=association_table, back_populates="students",overlaps="courses,professors")
+
+
+class Admin(Base):
+    __tablename__ = 'admin'
+
+    user_name = Column(VARCHAR)
+    user_admin_id = Column(INTEGER, primary_key=True)

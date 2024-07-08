@@ -1,4 +1,3 @@
-from typing import ClassVar
 from shcemas.user import user_Info
 from fastapi import HTTPException 
 from pydantic import BaseModel ,model_validator

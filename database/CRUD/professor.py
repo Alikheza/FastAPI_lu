@@ -14,6 +14,7 @@ def create_professor(db,data):
         professor_R(db=db, data=data)
     except Exception as e:
         raise HTTPException(detail=f"{e!r}مشکلی در ثبت اطلاعات استاد به وجود امده است لطفا مقادیر وارده شده را دوباره چک کنید",status_code=400)
+
 def professor_R(db, data):
     professor = read_professor(db=db, p_id=data.user_professor_id)
     course= db.query(models.course).filter(models.course.course_id.in_(data.user_professor_course_IDs.split('-'))).all()
@@ -35,23 +36,35 @@ def read_relationship_CR(db, id_p, id_c, _not_=False):
     return query.first()
 
 
-#function for delete professor
+
+#functions for delete professor
 def delete_professor(db, id):
     professor = db.query(models.Professor).filter(models.Professor.user_professor_id == id).first()
     delete = models.association_table.delete().where(models.association_table.c.user_professor_id==id)
     db.delete(professor)
     db.execute(delete)
     db.commit()
-
-
-
+    
+def delete_professor_course(db, p_id, c_id):
+    check_r=read_relationship_CR(db=db, id_p=p_id, id_c=c_id)
+    if check_r:
+        query = delete(models.association_table).where(models.association_table.c.course_id == c_id, models.association_table.c.user_professor_id == p_id)
+        db.execute(query)
+        db.commit()
+    else:
+        raise HTTPException(detail="استاد مورد نظر این درس را انتخاب نکرده است", status_code=400)
+    
 
 #functions for updating professor (use select function ,so the user should not send all the data again)
-def update_professor(db, data, id):
+def update_professor(db, data, id , lc):
     query = update(models.Professor).where(models.Professor.user_professor_id == id).values(**data.dict(exclude={'user_professor_course_IDs'}))
     db.execute(query)
     relation = models.association_table.update().where(models.association_table.c.user_professor_id==id).values(user_professor_id = data.user_professor_id)
     db.execute(relation)
+    if lc != data.user_professor_course_IDs:
+        check_relation = db.query(models.association_table).filter(models.association_table.c.course_id.in_(data.user_professor_course_IDs.split('-'))).all()
+        for i in check_relation:raise HTTPException(detail=f' درس {i.course_id} قبلا به استاد دیگری داده شده است',status_code=400)
+        professor_R(db=db, data=data)
     db.commit()
 
 def select_professor(db , id):
@@ -88,3 +101,5 @@ def select_professor(db , id):
     professor_data['user_professor_course_IDs']=formatstr 
     return professor_data
 
+def read_professor_ID(db, id):
+    return db.query(models.Professor).filter(models.Professor.user_ID==id).first()

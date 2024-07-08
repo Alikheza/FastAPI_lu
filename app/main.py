@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from routers import  student , course , professor
+from routers import  student , course , professor , admin
 from database.connect import create_all_table
+
 
 
 def lifespan(app:FastAPI):
@@ -11,8 +12,11 @@ def lifespan(app:FastAPI):
     yield
 
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 app.include_router(course.router, tags=["course"])
 app.include_router(professor.router, tags=["professor"])
 app.include_router(student.router, tags=["student"])
+app.include_router(admin.router, tags=["admin"])
